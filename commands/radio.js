@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const fs = require('fs');
+var ytpl = require('ytpl');
 const db = require('quick.db');
 module.exports = {
     name: "radio",
@@ -13,7 +14,7 @@ module.exports = {
     if(!msg.guild.me.hasPermission("SPEAK")) return msg.quote("Hmmm, não consigo reproduzir o som no canal...");
     let voice = msg.member.voice.channel;
     if(!voice) return msg.quote("Não te encontrei em nenhum canal de voz.");
-    if(voice.members.size === voice.userLimit) return msg.quote("Eu acho que o canal em que você está conectado, nesse momento está cheio.");
+    if(voice.members.size-1> voice.userLimit) return msg.quote("Eu acho que o canal em que você está conectado, nesse momento está cheio.");
     console.log(voice);
     //voice.setSelfDeaf(true);
     if(args[0] === "1") {
@@ -26,7 +27,7 @@ quality: 'highestaudio',
         lofi.on("error", (err) => {
           msg.quote("Esta estação está indisponível no momento.")
         
-          connection.play("./Radio.mp3");
+          connection.play("../Radio.mp3");
         })
         lofi.on("start", () => {
         msg.quote("Tocando estação: Lo-Fi!");
@@ -42,7 +43,7 @@ quality: 'highestaudio',
         tglr.on("error", (err) => {
           msg.quote("Esta estação está indisponível no momento.")
         
-          connection.play("./Radio.mp3");
+          connection.play("../Radio.mp3");
         });
         tglr.on("start", () => {
         msg.quote("Tocando estação: TGLR!");
@@ -59,7 +60,7 @@ quality: 'highestaudio',
           console.error(err)
           msg.quote("Esta estação está indisponível no momento.")
         
-          connection.play("./Radio.mp3");
+          connection.play("../Radio.mp3");
         });
         ncs.on("start", () => {
         msg.quote("Tocando estação: NCS!");
@@ -68,26 +69,14 @@ quality: 'highestaudio',
     } else if(args[0] === "4") {
       voice.join().then(connection => {
         connection.voice.setSelfDeaf(true);
- const play = () => {
- let array = [
-   "https://youtu.be/rFtMbqagnA4",
-"https://m.youtube.com/watch?v=xGHXu6bKavU",
-"https://youtu.be/ur8ftRFb2Ac",
-"https://youtu.be/-N4jf6rtyuw",
-"https://youtu.be/_dk4JYnVqeI",
-"https://youtu.be/5a6LrFPW5-k",
-"https://youtu.be/i4YNzxV_jy4",
-"https://youtu.be/PjPr6xwY4ss",
-"https://youtu.be/HvY62TTte14",
-"https://youtu.be/gAjR4_CbPpQ"
-   ];
-   let playlist = array[Math.floor(Math.random() * array.length)];
- let dispatcher = connection.play(ytdl("https://youtu.be/doNx5K1HcY4"));
- dispatcher.on("error", console.error);
+ let dispatcher = connection.play(ytpl("https://youtu.be/1tG0hDLX7sI"));
+ dispatcher.on("error", (err) => {
+   console.error(err)
+   message.quote("Esta estação está indisponível no momento.")
+   connection.play("../Radio.mp3")
+ });
  dispatcher.on("finish", play);
- };
-      play();
-msg.quote("Vamos se requebrar, a melhor playlist da FailRadio!");
+msg.quote("Tocando estação: Relaxing Radio");
       });
       } else if(args[0] === "5") {
         
@@ -100,7 +89,7 @@ quality: 'highestaudio',
           s.on("error", (err) => {
           msg.quote("Esta estação está indisponível no momento.")
         
-          connection.play("./Radio.mp3");
+          connection.play("../Radio.mp3");
           })
           s.on("start", () => {
           msg.quote("Tocando estação: Radio 90's Mix!")
@@ -116,7 +105,7 @@ quality: 'highestaudio',
           rock.on("error", (err) => {
           msg.quote("Esta estação está indisponível no momento.")
         
-          connection.play("./Radio.mp3");
+          connection.play("../Radio.mp3");
           })
           rock.on("start", () => {
           msg.quote("Tocando estação: Rock Radio!");
@@ -132,7 +121,7 @@ quality: 'highestaudio',
           indie.on("error", (err) => {
           msg.quote("Esta estação está indisponível no momento.")
         
-          connection.play("./Radio.mp3");
+          connection.play("../Radio.mp3");
           })
           indie.on("start", () => {
           msg.quote("Tocando estação: Indie pop")
@@ -157,7 +146,7 @@ quality: 'highestaudio',
           funk.on("error", (err) => {
           msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("./Radio.mp3");
+          connection.play("../Radio.mp3");
           })
           funk.on("start", () => {
           msg.reply("Tocando estação: Funk Rádio (pt-br)")
@@ -168,7 +157,7 @@ quality: 'highestaudio',
       } else {
     voice.join().then(connection => {
       const play = () => {
-      let radio = connection.play("./Radio.mp3");
+      let radio = connection.play("../Radio.mp3");
       radio.setVolume(1.5);
       radio.on("finish", play);
       };
@@ -176,9 +165,8 @@ quality: 'highestaudio',
    
     connection.voice.setSelfDeaf(true);
     });
-    let station = "1 - Lo-fi\n2 - The Good Life Radio\n3 - NCS\n4 - FailRadio (pt-br)\n5 - Radio 90's Mix\n6 - Rock Rádio\n7 - Indie pop\n8 - Funk Rádio (pt-br)";
+    let station = "1 - Lo-fi\n2 - The Good Life Radio\n3 - NCS\n4 - Relaxing Radio\n5 - Radio 90's Mix\n6 - Rock Rádio\n7 - Indie pop\n8 - Funk Rádio (pt-br)";
     msg.reply("Hmmm, parece que você não colocou qual estação quer, tente ai!\nuse f!radio (número da estação)\nEstações:\n " + station);
     }
   }
     }
-}

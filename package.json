@@ -17,10 +17,15 @@
     "express": "^4.17.1",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.2.7",
+    "google-maps-image-api": "^1.0.3",
+    "google-maps-image-api-url": "^1.0.3",
+    "iss": "0.0.2",
+    "moment-timezone": "^0.5.33",
     "nicemeet.js": "^2.0.0",
     "opusscript": "0.0.8",
     "quick.db": "^7.1.3",
     "ytdl": "^1.4.1",
-    "ytdl-core": "^4.5.0"
+    "ytdl-core": "^4.5.0",
+    "ytpl": "^2.0.5"
   }
 }
