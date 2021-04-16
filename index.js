@@ -49,45 +49,35 @@ fs.readdir(`./commands/`, (error, files) => {
 });
 client.on("ready", () => {
   let activity = ""
-let h = moment(Date.now()).tz("America/Sao_Paulo").format("hh");
-if(h >05) return client.user.setAvatar("./dayavatar.png");
-  if(h > 06) {
-  activity = [
+  let h = moment().tz("america/sao_paulo").format("h");
+  if(h >= 06) {
+ activity = [
     {name: "Escute qualquer estação em seu servidor!", type: 0},
     {name: "Use f!help para ver meus comandos.", type: 3},
     {name: `${client.guilds.cache.size} Servidores`, type: 5}
     ];
-  } else if(h>11) {
-    activity = "Estou almoçando, jájá eu volto.";
-  } else if(h>13) {
+  } else if(h >= 11) {
+    activity = {name: "Almoçando...", type: 3};
+  } else if(h >= 13) {
     activity = [
-      {name: "Use f!help para ver comandos.", type: 0},
-      {name: "Nada mais, que um cafezinho da tarde.", type: 2},
-      {name: "Teen Titans Go!", type: "WATCHING"}
+      {name: "Use f!help para ver meus comandos."},
+      {name: `${client.users.cache.size} Usuários.`, type: 3},
+      {name: `${client.guilds.cache.size} Servidores`, type: 5}
       ];
-  } else if(h>15) {
-    activity=[{
-      name: "Otima tarde!",
-      type: 1,
-      url: "https://twitch.tv/iguhr"
-    },
-    {name: "Use f!help e saiba todos meus comandos"},
-    {name: "Parece que NINGUÉM nunca desvendou esse easteregg", type: 5}];
-  } else if(h>18) {
-    activity="Estou jantando, jájá volto para conversar.";
   } else {
-    activity="A mimir 💤";
-    client.user.setAvatar("./night_avatar.png");
+    activity = [
+      {name: "Escute qualquer estação em seu servidor!", type: 0},
+      {name: "Use f!help para ver meus comandos.", type: 3},
+      {name: `${client.guilds.cache.size} Servidores`, type: 5}
+      ];
   }
-    setInterval(() => {
+  setInterval(() => {
     let activitie = activity[Math.floor(Math.random() * activity.length)];
   client.user.setActivity(activitie);
     }, 16000);
     client.user.setStatus('ONLINE');
     console.log("Ativo.");
     // Slash Commands
-let slash = require('./modules/slash.js')
-slash(client);
     
 });
 client.on("guildCreate", (guild) => {

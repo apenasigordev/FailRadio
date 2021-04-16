@@ -22,6 +22,7 @@
     "iss": "0.0.2",
     "moment-timezone": "^0.5.33",
     "nicemeet.js": "^2.0.0",
+    "node-fetch": "^2.6.1",
     "opusscript": "0.0.8",
     "quick.db": "^7.1.3",
     "ytdl": "^1.4.1",

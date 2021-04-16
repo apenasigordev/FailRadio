@@ -15,7 +15,16 @@ module.exports = {
     let voice = msg.member.voice.channel;
     if(!voice) return msg.quote("Não te encontrei em nenhum canal de voz.");
     if(voice.members.size-1> voice.userLimit) return msg.quote("Eu acho que o canal em que você está conectado, nesse momento está cheio.");
-    console.log(voice);
+    console.log(voice.members)
+    voice.members.forEach(member => {
+      if(client.user.id === member.user.id) return;
+      if(member.user.bot) {
+        setTimeout(() => {
+        msg.reply("Parece que já tem algum bot tocando música.\nCaso for um engano, contate com criador usando f!support.");
+        voice.leave();
+        },2000);
+      }
+    });
     //voice.setSelfDeaf(true);
     if(args[0] === "1") {
       voice.join().then(connection => {
