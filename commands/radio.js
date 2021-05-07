@@ -10,11 +10,11 @@ module.exports = {
       "rd"
     ],
     execute(client, msg, args) {
-        if(!msg.guild.me.hasPermission("CONNECT")) return msg.quote("Hmmm, não consigo entrar no canal...");
-    if(!msg.guild.me.hasPermission("SPEAK")) return msg.quote("Hmmm, não consigo reproduzir o som no canal...");
+        if(!msg.guild.me.hasPermission("CONNECT")) return msg.quote("Hmmm, não consigo entrar no canal...\nCaso for um engano, contate com criador usando f!support.");
+    if(!msg.guild.me.hasPermission("SPEAK")) return msg.quote("Hmmm, não consigo reproduzir o som no canal...\nCaso for um engano, contate com criador usando f!support.");
     let voice = msg.member.voice.channel;
-    if(!voice) return msg.quote("Não te encontrei em nenhum canal de voz.");
-    if(voice.members.size-1> voice.userLimit) return msg.quote("Eu acho que o canal em que você está conectado, nesse momento está cheio.");
+    if(!voice) return msg.quote("Não te encontrei em nenhum canal de voz.\nCaso for um engano, contate com criador usando f!support.");
+    if(voice.members.size-1> voice.userLimit) return msg.quote("Eu acho que o canal em que você está conectado, nesse momento está cheio.\nCaso for um engano, contate com criador usando f!support.");
     console.log(voice.members)
     voice.members.forEach(member => {
       if(client.user.id === member.user.id) return;
