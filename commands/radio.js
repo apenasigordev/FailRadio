@@ -3,6 +3,7 @@ const ytdl = require('ytdl-core');
 const fs = require('fs');
 var ytpl = require('ytpl');
 const db = require('quick.db');
+const superagent = require('superagent');
 module.exports = {
     name: "radio",
     aliases: [
@@ -10,20 +11,23 @@ module.exports = {
       "rd"
     ],
     execute(client, msg, args) {
-        if(!msg.guild.me.hasPermission("CONNECT")) return msg.quote("Hmmm, não consigo entrar no canal...\nCaso for um engano, contate com criador usando f!support.");
-    if(!msg.guild.me.hasPermission("SPEAK")) return msg.quote("Hmmm, não consigo reproduzir o som no canal...\nCaso for um engano, contate com criador usando f!support.");
+        if(!msg.guild.me.hasPermission("CONNECT")) return msg.reply("Hmmm, não consigo entrar no canal...\nCaso for um engano, contate com criador usando f!support.");
+    if(!msg.guild.me.hasPermission("SPEAK")) return msg.reply("Hmmm, não consigo reproduzir o som no canal...\nCaso for um engano, contate com criador usando f!support.");
     let voice = msg.member.voice.channel;
-    if(!voice) return msg.quote("Não te encontrei em nenhum canal de voz.\nCaso for um engano, contate com criador usando f!support.");
-    if(voice.members.size-1> voice.userLimit) return msg.quote("Eu acho que o canal em que você está conectado, nesse momento está cheio.\nCaso for um engano, contate com criador usando f!support.");
+    if(!voice) return msg.reply("Não te encontrei em nenhum canal de voz.\nCaso for um engano, contate com criador usando f!support.");
+    if(voice.userLimit) {
+    if(voice.members.size-1> voice.userLimit) return msg.reply("Eu acho que o canal em que você está conectado, nesse momento está cheio.\nCaso for um engano, contate com criador usando f!support");
+    }
     console.log(voice.members)
     voice.members.forEach(member => {
       if(client.user.id === member.user.id) return;
+      /*
       if(member.user.bot) {
         setTimeout(() => {
         msg.reply("Parece que já tem algum bot tocando música.\nCaso for um engano, contate com criador usando f!support.");
         voice.leave();
         },2000);
-      }
+      }*/
     });
     //voice.setSelfDeaf(true);
     if(args[0] === "1") {
@@ -34,12 +38,12 @@ quality: 'highestaudio',
     highWaterMark: 1 << 25
         }));
         lofi.on("error", (err) => {
-          msg.quote("Esta estação está indisponível no momento.")
+          msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("../Radio.mp3");
+          connection.play("../Leave.mp3");
         })
         lofi.on("start", () => {
-        msg.quote("Tocando estação: Lo-Fi!");
+        msg.reply("Tocando estação: Lo-Fi!");
         });
       });
     } else if(args[0] === "2") {
@@ -50,12 +54,12 @@ quality: 'highestaudio',
     highWaterMark: 1 << 25
         }));
         tglr.on("error", (err) => {
-          msg.quote("Esta estação está indisponível no momento.")
+          msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("../Radio.mp3");
+          connection.play("../Leave.mp3");
         });
         tglr.on("start", () => {
-        msg.quote("Tocando estação: TGLR!");
+        msg.reply("Tocando estação: TGLR!");
         });
       });
     } else if(args[0] === "3") {
@@ -67,12 +71,12 @@ quality: 'highestaudio',
         }))
         ncs.on("error",(err) => {
           console.error(err)
-          msg.quote("Esta estação está indisponível no momento.")
+          msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("../Radio.mp3");
+          connection.play("../Leave.mp3");
         });
         ncs.on("start", () => {
-        msg.quote("Tocando estação: NCS!");
+        msg.reply("Tocando estação: NCS!");
         });
       });
     } else if(args[0] === "4") {
@@ -81,11 +85,11 @@ quality: 'highestaudio',
  let dispatcher = connection.play(ytpl("https://youtu.be/1tG0hDLX7sI"));
  dispatcher.on("error", (err) => {
    console.error(err)
-   message.quote("Esta estação está indisponível no momento.")
-   connection.play("../Radio.mp3")
+   message.reply("Esta estação está indisponível no momento.")
+   connection.play("../Leave.mp3")
  });
  dispatcher.on("finish", play);
-msg.quote("Tocando estação: Relaxing Radio");
+msg.reply("Tocando estação: Relaxing Radio");
       });
       } else if(args[0] === "5") {
         
@@ -96,12 +100,12 @@ quality: 'highestaudio',
     highWaterMark: 1 << 25
           }));
           s.on("error", (err) => {
-          msg.quote("Esta estação está indisponível no momento.")
+          msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("../Radio.mp3");
+          connection.play("../Leave.mp3");
           })
           s.on("start", () => {
-          msg.quote("Tocando estação: Radio 90's Mix!")
+          msg.reply("Tocando estação: Radio 90's Mix!")
           });
         });
       } else if(args[0] === "6") {
@@ -112,12 +116,12 @@ quality: 'highestaudio',
     highWaterMark: 1 << 25
           }));
           rock.on("error", (err) => {
-          msg.quote("Esta estação está indisponível no momento.")
+          msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("../Radio.mp3");
+          connection.play("../Leave.mp3");
           })
           rock.on("start", () => {
-          msg.quote("Tocando estação: Rock Radio!");
+          msg.reply("Tocando estação: Rock Radio!");
           });
         });
       } else if(args[0] === "7") {
@@ -128,15 +132,15 @@ quality: 'highestaudio',
     highWaterMark: 1 << 25
           }));
           indie.on("error", (err) => {
-          msg.quote("Esta estação está indisponível no momento.")
+          msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("../Radio.mp3");
+          connection.play("../Leave.mp3");
           })
           indie.on("start", () => {
-          msg.quote("Tocando estação: Indie pop")
+          msg.reply("Tocando estação: Indie pop")
           });
         });
-      } else if(args[0] === "8") {
+      } else if(args[0] === "ee") {
         msg.reply("⚠️ • Aviso\nEsta estação tem palavrões pesados, deseja continuar?").then(mesg => {
           mesg.react("✔️");
           mesg.react("❌");
@@ -155,7 +159,7 @@ quality: 'highestaudio',
           funk.on("error", (err) => {
           msg.reply("Esta estação está indisponível no momento.")
         
-          connection.play("../Radio.mp3");
+          connection.play("../Join.mp3");
           })
           funk.on("start", () => {
           msg.reply("Tocando estação: Funk Rádio (pt-br)")
@@ -163,18 +167,69 @@ quality: 'highestaudio',
         });
           });
         });
+      } else if(args[0] === "8") {
+        voice.join().then(connection => { 
+        connection.voice.setSelfDeaf(true);
+        let jovem = connection.play(ytdl("https://youtu.be/gnyW6uaUgk4", {
+         quality: 'highestaudio',
+         highWaterMark: 1 << 25
+        }));
+         connection.setVolume(1.5)
+         jovem.on("error", (err) => {
+          msg.reply("Esta estação está indisponível no momento.")
+        
+          connection.play("../Radio.mp3");
+          })
+          jovem.on("start", () => {
+          msg.reply("Tocando estação: Hits Radio")
+          });
+         
+        });
+      } else if(args[0] === "9") {
+        voice.join().then(connection => {
+          connection.voice.setSelfDeaf(true);
+          const broadcast = client.voice.createBroadcast();
+const stream = "https://19293.live.streamtheworld.com:443/JP_SP_FM_SC"
+
+          let jovem = connection.play(stream);
+          //connection.play(broadcast);
+          jovem.on("error", (err) => {
+          msg.reply("Esta estação está indisponível no momento.")
+        
+          connection.play("../Radio.mp3");
+          })
+          jovem.on("start", () => {
+          msg.reply("Tocando estação: Jovem Pan")
+          });
+        });
+      } else if(args[0] === "10") {
+        voice.join().then(connection => {
+          connection.voice.setSelfDeaf(true);
+          const broadcast = client.voice.createBroadcast();
+          const stream = "https://18733.live.streamtheworld.com/MIXFM_SAOPAULO.mp3";
+          let mix = connection.play(stream);
+         //connection.play(broadcast)
+         
+         mix.on("error", (err) => {
+           msg.reply("Esta estação está indisponível no momento.");
+      
+         });
+         mix.on("start", () => {
+           msg.reply("Tocando estação: Mix FM");
+         })
+        });
       } else {
     voice.join().then(connection => {
-      const play = () => {
-      let radio = connection.play("../Radio.mp3");
+    //onst play = () => {
+     /* let radio = connection.play("../Join.mp3");
       radio.setVolume(1.5);
       radio.on("finish", play);
-      };
-      play();
+      };*/
+     // play();
    
     connection.voice.setSelfDeaf(true);
     });
-    let station = "1 - Lo-fi\n2 - The Good Life Radio\n3 - NCS\n4 - Relaxing Radio\n5 - Radio 90's Mix\n6 - Rock Rádio\n7 - Indie pop\n8 - Funk Rádio (pt-br)";
+    let station = "1 - Lo-fi\n2 - The Good Life Radio\n3 - NCS\n4 - Relaxing Radio\n5 - Radio 90's Mix\n6 - Rock Rádio\n7 - Indie pop\n8 - Hits Radio \n9 - Jovem Pan São Paulo (Brasil)";
     msg.reply("Hmmm, parece que você não colocou qual estação quer, tente ai!\nuse f!radio (número da estação)\nEstações:\n " + station);
     }
   }
