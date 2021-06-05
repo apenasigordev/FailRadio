@@ -2,4 +2,4 @@
 Um bot para Discord feito totalmente em JS.
 
 # Sumário
-Nada ainda '-'
+[Faq](https://github.com/apenasigordev/FailRadio-Faq)
