@@ -140,33 +140,6 @@ quality: 'highestaudio',
           msg.reply("Tocando estação: Indie pop")
           });
         });
-      } else if(args[0] === "ee") {
-        msg.reply("⚠️ • Aviso\nEsta estação tem palavrões pesados, deseja continuar?").then(mesg => {
-          mesg.react("✔️");
-          mesg.react("❌");
-let no = mesg.createReactionCollector((r,u)=>r.emoji.name==="❌"&&u.id === msg.author.id, {max: 1}).on("collect", () => {
-  mesg.delete()
-  voice.leave();
-});
-          let collector = mesg.createReactionCollector((r,u) => r.emoji.name==="✔️"&&u.id === msg.author.id, {max: 1}).on("collect", () => {
-          msg.delete();
-voice.join().then(connection => {
-  connection.voice.setSelfDeaf(true);
-          let funk = connection.play(ytdl('https://youtu.be/BV97z3jiaoE', {
-quality: 'highestaudio',
-    highWaterMark: 1 << 25
-          }));
-          funk.on("error", (err) => {
-          msg.reply("Esta estação está indisponível no momento.")
-        
-          connection.play("../Join.mp3");
-          })
-          funk.on("start", () => {
-          msg.reply("Tocando estação: Funk Rádio (pt-br)")
-          });
-        });
-          });
-        });
       } else if(args[0] === "8") {
         voice.join().then(connection => { 
         connection.voice.setSelfDeaf(true);
