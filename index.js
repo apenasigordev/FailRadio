@@ -5,18 +5,25 @@ const fs = require('fs');
 const db = require('quick.db');
 const express = require('express'),
 app = express();
+const disbut = require('discord-buttons')(client);
 const Topgg = require("@top-gg/sdk");
 let meet = require("nicemeet.js");
 const webhook = new Topgg.Webhook(process.env.webhook);
+const DisTube = require("distube")
+//const SpotifyPlugin = require("@distube/spotify")
+
+const {MessageEmbed} = require('discord.js');
 const moment = require('moment-timezone');
-//var ytpl = require('ytpl');
 let prefix = "f!";
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
+client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: true, leaveOnFinish: true,
+
+});
 client.db = db;
 
 const { APIMessage, Message } = require('discord.js');
-//const superagent = require('superagent');
+
 /**
 * @param {StringResolvable|APIMessage} [content='']
 * @param {MessageOptions|MessageAdditions} [options={}]
@@ -53,6 +60,10 @@ Message.prototype.quote = async function (content, options) {
 app.get("/", (req,res) => {
   res.sendStatus(200);
 });
+client.on('clickButton', async (button) => {
+  await button.defer();
+});
+
 app.post("/dblwebhook", webhook.middleware(), (req, res) => {
   let votembed = new Discord.MessageEmbed()
   .addFields([{
@@ -67,51 +78,36 @@ app.post("/dblwebhook", webhook.middleware(), (req, res) => {
   client.users.cache.get(req.vote.user).send(votembed);
 });
 app.listen(process.env.PORT)
-fs.readdir(`./commands/`, (error, files) => {
-    if (error)return console.log("Error while trying to get the commmands.");
-     
-    files.forEach(file => {
-        const command = require(`./commands/${file}`);
-        const commandName = file.split(".")[0];
+fs.readdir("./commands/", (err, files) => {
+    if (err) return console.log("Could not find any commands!")
+    const jsFiles = files.filter(f => f.split(".").pop() === "js")
+    if (jsFiles.length <= 0) return console.log("Could not find any commands!")
+    jsFiles.forEach(file => {
+        const cmd = require(`./commands/${file}`)
+        console.log(`Loaded ${file}`)
+        client.commands.set(cmd.name, cmd)
+        if (cmd.aliases) cmd.aliases.forEach(alias => client.aliases.set(alias, cmd.name))
+    })
+})
 
-        client.commands.set(commandName, command);
 
-        if (command.aliases) {
-            command.aliases.forEach(alias => {
-                client.aliases.set(alias, command);
-            });
-        };
-    });
-});
-client.on("ready", () => {
+client.on("ready", async() => {
+    
+    
   let activity = ""
-  let h = moment().tz("america/sao_paulo").format("h");
-  if(h >= 06) {
+/*  let h = moment().tz("america/sao_paulo").format("h");
+  if(h >= 06) {*/
  activity = [
     {name: "Escute qualquer estação em seu servidor!", type: 0},
-    {name: "Use f!help para ver meus comandos.", type: 3},
+    {name: "Use f!ajuda para ver meus comandos.", type: 3},
     {name: `${client.guilds.cache.size} Servidores`, type: 5}
     ];
-  } else if(h >= 11) {
-    activity = {name: "Almoçando...", type: 3};
-  } else if(h >= 13) {
-    activity = [
-      {name: "Use f!help para ver meus comandos."},
-      {name: `${client.users.cache.size} Usuários.`, type: 3},
-      {name: `${client.guilds.cache.size} Servidores`, type: 5}
-      ];
-  } else {
-    activity = [
-      {name: "Escute qualquer estação em seu servidor!", type: 0},
-      {name: "Use f!help para ver meus comandos.", type: 3},
-      {name: `${client.guilds.cache.size} Servidores`, type: 5}
-      ];
-  }
+
   setInterval(() => {
     let activitie = activity[Math.floor(Math.random() * activity.length)];
   client.user.setActivity(activitie);
     }, 16000);
-    client.user.setStatus('ONLINE');
+    client.user.setStatus('online');
     console.log("Ativo.");
     // Slash Commands
     
@@ -120,27 +116,55 @@ client.on("guildCreate", (guild) => {
   console.log(guild);
 });
 client.on("reconnecting", () => {
-  client.user.setStatus("IDLE");
+  client.user.setStatus("idle");
   console.log("Reconectando...");
 })
 client.on("error", (err) => {
 client.user.setActivity("Erro encontrado, por favor, aguarde o bot reconectar...");
-client.user.setStatus("DND");
+client.user.setStatus("dnd");
 console.log(err);
 });
 client.on("message", msg => {
+  let message = msg;
+if(msg.author.bot && !msg.guild) return;
+if(msg.content === "<@"+client.user.id+">") {
+  msg.reply("Olá, meu prefixo é f!")
+}
 
-    if (msg.content.startsWith(prefix) && !msg.author.bot && msg.guild) {
+    if (msg.content.startsWith(prefix)) {
         const args = msg.content.slice(prefix.length).split(" ");
-        const command = args.shift().toLowerCase();
-        
-        if (client.commands.find(f => f.name === command)) {
-            client.commands.get(command).execute(client, msg, args)
-        }
-       /* if(client.commands.get(command)
-	|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command))) {
-	  client.aliases.get(command).execute(client,msg,args);
-	}*/
+        const command = args.shift().toLowerCase()
+    const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command))
+    if (!cmd) return;
+    try {
+        cmd.execute(client, message, args)
+    } catch (e) {
+        console.error(e)
+        message.reply(`Error: ${e}`)
+    }
     }
 });
 client.login(process.env.token);
+
+client.distube
+    .on("playSong", (message, queue, song) => {
+      var playSong = new MessageEmbed()
+      .setTitle("🎧 • Tocando")
+      .addField("🎵 • Música", `**${song.name}** - \`${song.formattedDuration}\``)
+      .addField("Pedido por", `${song.user}`)
+      .setThumbnail(song.thumbnail)
+      .setColor("GREEN");
+      message.quote(playSong)
+    })
+    .on("addSong", (message, queue, song) => {
+      var addSong = new MessageEmbed()
+      .setTitle("🎵 • Adicionado na fila")
+      .addField("🎧 • Música", `**${song.name}** - \`${song.formattedDuration}\``)
+      .addField("Pedido por", `${song.user}`)
+      .setThumbnail(song.thumbnail)
+      .setColor("RED");
+      message.quote(addSong);
+    })
+   /* .on("error", (message,err) => {
+      message.quote(`Ocorreu algum erro: \`\`\`${err.stack}\`\`\``)
+    });*/

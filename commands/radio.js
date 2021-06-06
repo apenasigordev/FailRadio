@@ -218,7 +218,74 @@ const stream = "https://19293.live.streamtheworld.com:443/JP_SP_FM_SC"
            msg.reply("Tocando estação: Mix FM");
          })
         });
-      } else {
+      } else if(args[0] === "11") {
+        voice.join().then(connection => {
+          connection.voice.setSelfDeaf(true);
+          const broadcast = client.voice.createBroadcast();
+const stream = "https://18123.live.streamtheworld.com:443/JP_SP_AM_SC"
+
+          let jovem = connection.play(stream);
+          //connection.play(broadcast);
+          jovem.on("error", (err) => {
+          msg.reply("Esta estação está indisponível no momento.")
+        
+          connection.play("../Radio.mp3");
+          })
+          jovem.on("start", () => {
+          msg.reply("Tocando estação: Jovem Pan News")
+          });
+        });
+      } else if(args[0] === "12") {
+        voice.join().then(connection => {
+          connection.voice.setSelfDeaf(true);
+          const broadcast = client.voice.createBroadcast();
+const stream = "https://live-tennisradio.sharp-stream.com/tennisradio.mp3"
+
+          let tennis = connection.play(stream);
+          //connection.play(broadcast);
+          tennis.on("error", (err) => {
+          msg.reply("Esta estação está indisponível no momento.")
+        
+          connection.play("../Radio.mp3");
+          })
+          tennis.on("start", () => {
+          msg.reply("Tocando estação: Tennis Radio (United Kingdom)")
+          });
+        });
+      } else if(args[0] === "13") {
+        voice.join().then(connection => {
+          connection.voice.setSelfDeaf(true);
+          const broadcast = client.voice.createBroadcast();
+          const stream = "http://freeus1.listen2myradio.com:5395/stream";
+          let fr = connection.play(stream);
+         //connection.play(broadcast)
+         
+         fr.on("error", (err) => {
+           msg.reply("Esta estação está indisponível no momento.");
+      
+         });
+         fr.on("start", () => {
+           msg.reply("Tocando estação: FailRadio");
+         })
+        });
+      } else if(args[0] === "14") {
+        voice.join().then(connection => {
+          connection.voice.setSelfDeaf(true);
+          const broadcast = client.voice.createBroadcast();
+          const stream = "http://stream.zeno.fm/ra7zxa1duv8uv";
+          let bounce = connection.play(stream);
+         //connection.play(broadcast)
+         
+         bounce.on("error", (err) => {
+           msg.reply("Esta estação está indisponível no momento.");
+      
+         });
+         bounce.on("start", () => {
+           msg.reply("Tocando estação: Bounce FM (GTA: SA)");
+         })
+        });
+      }
+     else {
     voice.join().then(connection => {
     //onst play = () => {
      /* let radio = connection.play("../Join.mp3");
@@ -229,7 +296,7 @@ const stream = "https://19293.live.streamtheworld.com:443/JP_SP_FM_SC"
    
     connection.voice.setSelfDeaf(true);
     });
-    let station = "1 - Lo-fi\n2 - The Good Life Radio\n3 - NCS\n4 - Relaxing Radio\n5 - Radio 90's Mix\n6 - Rock Rádio\n7 - Indie pop\n8 - Hits Radio \n9 - Jovem Pan São Paulo (Brasil)";
+    let station = "Radios\n1 - Lo-fi\n2 - The Good Life Radio\n3 - NCS\n4 - Relaxing Radio\n5 - Radio 90's Mix\n6 - Rock Rádio\n7 - Indie pop\n8 - Hits Radio \n> Brazilians Radio\n9 - Jovem Pan São Paulo (Brasil)\n10 - Mix FM São Paulo (Brasil)\n11 - Jovem Pan News São Paulo (Brasil)\n> Esports\n12 - Tennis Radio (United Kingdom)\n> FailStation\n13 - FailRadio\n14 - Bounce FM (GTA: SA inspiration)";
     msg.reply("Hmmm, parece que você não colocou qual estação quer, tente ai!\nuse f!radio (número da estação)\nEstações:\n " + station);
     }
   }

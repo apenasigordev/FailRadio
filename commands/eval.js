@@ -2,10 +2,14 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const fs = require('fs');
 const db = require('quick.db');
+const disbut = require('discord-buttons');
+
 module.exports = {
   name: "eval",
   aliases: ["e"],
   execute(client,message,args) {
+    
+
     if(message.author.id === "407859300527243275") {
         function clean(text) {
   if (typeof(text) === "string")
